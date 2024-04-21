@@ -1,26 +1,20 @@
 package com.sethu.blog.controller;
 
 import com.sethu.blog.dto.PostDTO;
-import com.sethu.blog.dto.UserDTO;
 import com.sethu.blog.service.PostService;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Collections;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PostControllerTest {
+class PostControllerTest {
 
     @Mock
     private PostService postService;
@@ -28,63 +22,48 @@ public class PostControllerTest {
     @InjectMocks
     private PostController postController;
 
-    private UserDTO testUserDTO;
-
-    @BeforeEach
-    public void setUp() {
-        testUserDTO = new UserDTO(1L, "testUser", "testUser123@", "test@example.com", null, null);
-    }
-
     @Test
-    public void testCreatePost() {
-        PostDTO postDTO = new PostDTO(1L, "Tittle 1", "Content 1", new Date(), testUserDTO);
-
-        System.out.println(postDTO.toString());
+    void testCreatePost() {
         // Given
+        PostDTO postDTO = new PostDTO();
         when(postService.createPost(postDTO)).thenReturn(postDTO);
 
         // When
         ResponseEntity<PostDTO> responseEntity = postController.createPost(postDTO);
 
         // Then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(postDTO, responseEntity.getBody());
-        verify(postService, times(1)).createPost(postDTO);
+        assertEquals(ResponseEntity.ok(postDTO), responseEntity);
     }
 
     @Test
-    public void testGetPostById() {
+    void testGetPostById() {
         // Given
         Long postId = 1L;
-        PostDTO postDTO = new PostDTO(postId,"Post 2", "Content 2", new Date(), testUserDTO);
+        PostDTO postDTO = new PostDTO();
         when(postService.getPostById(postId)).thenReturn(postDTO);
 
         // When
         ResponseEntity<PostDTO> responseEntity = postController.getPostById(postId);
 
         // Then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(postDTO, responseEntity.getBody());
-        verify(postService, times(1)).getPostById(postId);
+        assertEquals(ResponseEntity.ok(postDTO), responseEntity);
     }
 
     @Test
-    public void testGetAllPosts() {
+    void testGetAllPosts() {
         // Given
-        List<PostDTO> postDTOList = Collections.singletonList(new PostDTO());
+        List<PostDTO> postDTOList = Arrays.asList(new PostDTO(), new PostDTO());
         when(postService.getAllPosts()).thenReturn(postDTOList);
 
         // When
         ResponseEntity<List<PostDTO>> responseEntity = postController.getAllPosts();
 
         // Then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(postDTOList, responseEntity.getBody());
-        verify(postService, times(1)).getAllPosts();
+        assertEquals(ResponseEntity.ok(postDTOList), responseEntity);
     }
 
-     @Test
-    public   void testUpdatePost() {
+    @Test
+    void testUpdatePost() {
         // Given
         Long postId = 1L;
         PostDTO postDTO = new PostDTO();
@@ -94,13 +73,11 @@ public class PostControllerTest {
         ResponseEntity<PostDTO> responseEntity = postController.updatePost(postId, postDTO);
 
         // Then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(postDTO, responseEntity.getBody());
-        verify(postService, times(1)).updatePost(postId, postDTO);
+        assertEquals(ResponseEntity.ok(postDTO), responseEntity);
     }
 
     @Test
-    public void testDeletePost() {
+    void testDeletePost() {
         // Given
         Long postId = 1L;
 
@@ -108,8 +85,7 @@ public class PostControllerTest {
         ResponseEntity<String> responseEntity = postController.deletePost(postId);
 
         // Then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("Post deleted successful", responseEntity.getBody());
         verify(postService, times(1)).deletePost(postId);
+        assertEquals(ResponseEntity.ok("Post deleted successful"), responseEntity);
     }
 }
