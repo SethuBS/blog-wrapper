@@ -1,9 +1,7 @@
 package com.sethu.blog.controller;
 
 import com.sethu.blog.dto.PostDTO;
-import com.sethu.blog.entity.Post;
 import com.sethu.blog.service.PostService;
-import javafx.geometry.Pos;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

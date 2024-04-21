@@ -3,7 +3,6 @@ package com.sethu.blog.bootstrap;
 import com.sethu.blog.entity.Comment;
 import com.sethu.blog.entity.Post;
 import com.sethu.blog.entity.User;
-import com.sethu.blog.exception.ResourceAlreadyExistsException;
 import com.sethu.blog.repository.CommentRepository;
 import com.sethu.blog.repository.PostRepository;
 import com.sethu.blog.repository.UserRepository;
