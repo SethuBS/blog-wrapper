@@ -23,21 +23,18 @@ public class UserController {
 
     @GetMapping("{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long userId){
-        UserDTO userDTO = userService.getUserById(userId);
-        return ResponseEntity.ok(userDTO);
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers(){
-        List<UserDTO> userDTOList = userService.getAllUsers();
-        return ResponseEntity.ok(userDTOList);
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @PutMapping("{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long userId,
                                               @RequestBody UserDTO userDTO){
-        UserDTO updateUserDto = userService.updateUser(userId, userDTO);
-        return ResponseEntity.ok(updateUserDto);
+        return ResponseEntity.ok(userService.updateUser(userId, userDTO));
     }
 
     @DeleteMapping("{id}")
