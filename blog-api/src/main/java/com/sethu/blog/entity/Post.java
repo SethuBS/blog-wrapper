@@ -22,7 +22,7 @@ public class Post {
 
     private String title;
     private String content;
-    private Date createdDate;
+    private Date createdDate = new Date();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

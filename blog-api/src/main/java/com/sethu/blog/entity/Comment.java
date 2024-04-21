@@ -20,7 +20,7 @@ public class Comment {
     private Long id;
 
     private String content;
-    private Date createdDate;
+    private Date createdDate = new Date();
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

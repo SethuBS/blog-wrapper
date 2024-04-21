@@ -3,7 +3,7 @@ package com.sethu.blog.service;
 import com.sethu.blog.dto.UserDTO;
 import com.sethu.blog.entity.User;
 import com.sethu.blog.exception.ResourceAlreadyExistsException;
-import com.sethu.blog.mapper.UserMapper;
+import com.sethu.blog.mapper.Mapper;
 import com.sethu.blog.repository.UserRepository;
 import com.sethu.blog.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,13 +30,13 @@ public class UserServiceImplTest {
     @BeforeEach
     public void setUp() {
         // Create a test UserDTO
-        testUserDTO = new UserDTO(1L, "testUser", "test@example.com", null, null);
+        testUserDTO = new UserDTO(1L, "testUser", "testUser","test@example.com", null, null);
     }
 
     @Test
     void createUser_Success() {
 
-        User user = UserMapper.mapToUser(testUserDTO);
+        User user = Mapper.mapToUser(testUserDTO);
 
         when(userRepository.findUserByEmail(testUserDTO.getEmail())).thenReturn(null);
         when(userRepository.save(any(User.class))).thenReturn(user);

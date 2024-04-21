@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -12,6 +14,6 @@ import lombok.Setter;
 public class CommentDTO {
     private Long id;
     private String content;
-    private UserDTO author;
     private PostDTO post;
+    private Date createdDate;
 }
