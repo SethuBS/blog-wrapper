@@ -16,4 +16,5 @@ public class PostDTO {
     private String title;
     private String content;
     private Date createDate;
+    private UserDTO author;
 }

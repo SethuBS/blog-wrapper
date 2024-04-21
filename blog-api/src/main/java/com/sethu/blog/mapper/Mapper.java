@@ -70,7 +70,7 @@ public class Mapper {
         postDTO.setId(post.getId());
         postDTO.setTitle(post.getTitle());
         postDTO.setContent(post.getContent());
-        // postDTO.setAuthor(mapToUserDTO(post.getAuthor()));
+        postDTO.setAuthor(mapToUserDTO(post.getAuthor()));
         return postDTO;
     }
 
@@ -79,7 +79,7 @@ public class Mapper {
         post.setId(postDTO.getId());
         post.setTitle(postDTO.getTitle());
         post.setContent(postDTO.getContent());
-        // post.setAuthor(mapToUser(postDTO.getAuthor()));
+        post.setAuthor(mapToUser(postDTO.getAuthor()));
         return post;
     }
 
@@ -87,7 +87,7 @@ public class Mapper {
         Comment comment = new Comment();
         comment.setId(commentDTO.getId());
         comment.setContent(commentDTO.getContent());
-        // comment.setAuthor(mapToUser(commentDTO.getAuthor()));
+        //comment.setAuthor(mapToUser(commentDTO.getAuthor()));
         comment.setPost(mapToPost(commentDTO.getPost()));
         return comment;
     }
