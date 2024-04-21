@@ -3,6 +3,7 @@ package com.sethu.blog.mapper;
 import com.sethu.blog.dto.UserDTO;
 import com.sethu.blog.entity.User;
 
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class UserMapper {
@@ -29,13 +30,22 @@ public class UserMapper {
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         // Map the posts
-        user.setPosts(userDTO.getPosts().stream()
-                .map(PostMapper::mapToPost)
-                .collect(Collectors.toList()));
+        if (userDTO.getPosts() != null) {
+            user.setPosts(userDTO.getPosts().stream()
+                    .map(PostMapper::mapToPost)
+                    .collect(Collectors.toList()));
+        } else {
+            user.setPosts(Collections.emptyList()); // or any other default behavior
+        }
+
         // Map the comments
-        user.setComments(userDTO.getComments().stream()
-                .map(CommentMapper::mapToComment)
-                .collect(Collectors.toList()));
+        if (userDTO.getComments() != null) {
+            user.setComments(userDTO.getComments().stream()
+                    .map(CommentMapper::mapToComment)
+                    .collect(Collectors.toList()));
+        } else {
+            user.setComments(Collections.emptyList()); // or any other default behavior
+        }
         return user;
     }
 }
