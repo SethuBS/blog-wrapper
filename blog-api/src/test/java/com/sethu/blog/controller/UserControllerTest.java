@@ -2,12 +2,6 @@ package com.sethu.blog.controller;
 
 import com.sethu.blog.dto.UserDTO;
 import com.sethu.blog.service.UserService;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +13,11 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @ExtendWith(MockitoExtension.class)
 public class UserControllerTest {
@@ -34,7 +33,7 @@ public class UserControllerTest {
     @BeforeEach
     public void setUp() {
         // Create a test UserDTO
-        testUserDTO = new UserDTO(1L, "testUser", "testUser123@","test@example.com", null, null);
+        testUserDTO = new UserDTO(1L, "testUser", "testUser123@","test@example.com", null, null,"USER");
     }
 
     @Test
@@ -72,8 +71,8 @@ public class UserControllerTest {
     public void testGetAllUsers() {
 
         // Creating some sample UserDTO objects
-        UserDTO user1 = new UserDTO(null,"user1", "user1@123","user1@example.com",null,null);
-        UserDTO user2 = new UserDTO(null,"user2", "user2@123","user2@example.com",null,null);
+        UserDTO user1 = new UserDTO(null,"user1", "user1@123","user1@example.com",null,null,"ADMIN");
+        UserDTO user2 = new UserDTO(null,"user2", "user2@123","user2@example.com",null,null,"USER");
 
         // Mocking the behavior of userService.getAllUsers() to return a list of UserDTOs
         List<UserDTO> expectedUserDTOList = Arrays.asList(user1, user2);
