@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*")
 @AllArgsConstructor
 @RestController
-@RequestMapping("api/v1/post")
+@RequestMapping("api/v1/posts")
 public class PostController {
 
     private PostService postService;
@@ -30,7 +31,7 @@ public class PostController {
         return ResponseEntity.ok(postService.getAllPosts());
     }
 
-    @PostMapping("id")
+    @PutMapping("id")
     public ResponseEntity<PostDTO> updatePost(@PathVariable("id") Long postId,
                                               @RequestBody PostDTO postDTO){
         return ResponseEntity.ok(postService.updatePost(postId,postDTO));

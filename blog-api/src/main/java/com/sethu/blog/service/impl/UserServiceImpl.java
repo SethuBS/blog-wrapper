@@ -38,12 +38,20 @@ public class UserServiceImpl implements UserService {
             throw new ResourceAlreadyExistsException("User with email: " + username + " already exists");
         }
 
+        addRole(userDTO);
         User user = Mapper.mapToUser(userDTO);
         user.setPassword(PasswordGenerator.generateDefaultPassword(12));
         User savedUser = userRepository.save(user);
 
         return Mapper.mapToUserDTO(savedUser);
+    }
 
+    private void addRole(UserDTO role) {
+        if (role.getRole().equals("admin")) {
+            role.setRole("ADMIN");
+        } else {
+            role.setUsername("USER");
+        }
     }
 
     @Override
