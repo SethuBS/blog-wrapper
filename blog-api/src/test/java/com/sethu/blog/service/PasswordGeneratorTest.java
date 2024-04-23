@@ -2,6 +2,7 @@ package com.sethu.blog.service;
 
 import com.sethu.blog.service.generator.PasswordGenerator;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 public class PasswordGeneratorTest {
 
