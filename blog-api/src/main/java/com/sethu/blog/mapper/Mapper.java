@@ -9,6 +9,7 @@ import com.sethu.blog.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Mapper {
@@ -24,18 +25,16 @@ public class Mapper {
         return userDTO;
     }
 
-    private static List<PostDTO> mapToPostDTOList(List<Post> posts) {
-        if (posts == null) {
-            return new ArrayList<>(); // return an empty list if posts is null
-        }
-        return posts.stream().map(Mapper::mapToPostDTOWithoutAuthor).collect(Collectors.toList());
+    private static List<PostDTO> mapToPostDTOList(List<Post> posts){
+        return Optional.ofNullable(posts)
+                .map(list -> list.stream().map(Mapper::mapToPostDTOWithoutAuthor).collect(Collectors.toList()))
+                .orElseGet(ArrayList::new);
     }
 
     private static List<CommentDTO> mapToCommentDTOList(List<Comment> comments) {
-        if (comments == null) {
-            return new ArrayList<>(); // return an empty list if comments is null
-        }
-        return comments.stream().map(Mapper::mapToCommentDTOWithoutAuthor).collect(Collectors.toList());
+        return Optional.ofNullable(comments)
+                .map(list -> list.stream().map(Mapper::mapToCommentDTOWithoutAuthor).collect(Collectors.toList()))
+                .orElseGet(ArrayList::new);
     }
 
     private static PostDTO mapToPostDTOWithoutAuthor(Post post) {
