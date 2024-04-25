@@ -1,6 +1,8 @@
 package com.sethu.blog.controller;
 
 import com.sethu.blog.dto.UserDTO;
+import com.sethu.blog.exception.ResourceAlreadyExistsException;
+import com.sethu.blog.exception.ResourceNotFundException;
 import com.sethu.blog.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
@@ -124,5 +127,26 @@ public class UserControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("User deleted successful", responseEntity.getBody());
         verify(userService, times(1)).deleteUser(userId);
+    }
+
+    @Test
+    public void testGetUserById_ResourceNotFoundException() {
+        // Mock data
+        Long userId = 1L;
+
+        // Mocking userService.getUserById(userId) to throw a ResourceNotFoundException
+        when(userService.getUserById(userId)).thenThrow(new ResourceNotFundException("User not found"));
+
+        // Call the controller method and assert that ResourceNotFundException is thrown
+        assertThrows(ResourceNotFundException.class, () -> userController.getUserById(userId));
+    }
+
+    @Test
+    public void testCreateUser_ResourceAlreadyExistsException() {
+        // Mock the userService's createUser method to throw a ResourceAlreadyExistsException
+        when(userService.createUser(testUserDTO)).thenThrow(new ResourceAlreadyExistsException("User already exists"));
+
+        // Call the createUser method in the userController and assert that ResourceAlreadyExistsException is thrown
+        assertThrows(ResourceAlreadyExistsException.class, () -> userController.createUser(testUserDTO));
     }
 }
