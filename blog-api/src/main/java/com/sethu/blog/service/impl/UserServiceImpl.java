@@ -1,5 +1,6 @@
 package com.sethu.blog.service.impl;
 
+import com.sethu.blog.configuration.EmailConfiguration;
 import com.sethu.blog.dto.UserDTO;
 import com.sethu.blog.entity.User;
 import com.sethu.blog.exception.ResourceAlreadyExistsException;
@@ -7,6 +8,7 @@ import com.sethu.blog.exception.ResourceNotFundException;
 import com.sethu.blog.mapper.Mapper;
 import com.sethu.blog.repository.UserRepository;
 import com.sethu.blog.service.UserService;
+import com.sethu.blog.service.email.EmailService;
 import com.sethu.blog.service.generator.PasswordGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,10 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
+
+    private EmailService emailService;
+
+    private EmailConfiguration emailConfiguration;
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
@@ -38,20 +44,13 @@ public class UserServiceImpl implements UserService {
             throw new ResourceAlreadyExistsException("User with email: " + username + " already exists");
         }
 
-        addRole(userDTO);
         User user = Mapper.mapToUser(userDTO);
         user.setPassword(PasswordGenerator.generateDefaultPassword(12));
         User savedUser = userRepository.save(user);
+        // welcoming email.
+        emailService.sendEmail(savedUser.getEmail(),emailConfiguration.getEmailSubject(),savedUser.getUsername(),emailConfiguration.getEmailBody());
 
         return Mapper.mapToUserDTO(savedUser);
-    }
-
-    private void addRole(UserDTO role) {
-        if (role.getRole().equals("admin")) {
-            role.setRole("ADMIN");
-        } else {
-            role.setUsername("USER");
-        }
     }
 
     @Override
