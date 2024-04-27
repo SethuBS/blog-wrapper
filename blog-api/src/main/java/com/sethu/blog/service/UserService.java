@@ -9,10 +9,12 @@ public interface UserService {
     UserDTO createUser(UserDTO userDTO);
 
     UserDTO getUserById(Long userId);
+    UserDTO getUserByEmail(String email);
 
     List<UserDTO> getAllUsers();
 
     UserDTO updateUser(Long userId, UserDTO updatedUser);
 
     void deleteUser(Long userId);
+    void updateUserPassword(Long userId, String newPassword);
 }

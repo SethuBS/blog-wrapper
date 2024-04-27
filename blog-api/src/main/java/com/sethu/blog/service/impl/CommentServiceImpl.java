@@ -2,7 +2,7 @@ package com.sethu.blog.service.impl;
 
 import com.sethu.blog.dto.CommentDTO;
 import com.sethu.blog.entity.Comment;
-import com.sethu.blog.exception.ResourceNotFundException;
+import com.sethu.blog.exception.ResourceNotFoundException;
 import com.sethu.blog.mapper.Mapper;
 import com.sethu.blog.repository.CommentRepository;
 import com.sethu.blog.service.CommentService;
@@ -27,7 +27,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDTO updateComment(Long commentId, CommentDTO updateComment) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResourceNotFundException("Comment with " + commentId + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Comment with " + commentId + " does not exist"));
         comment.setContent(updateComment.getContent());
         comment.setCreatedDate(updateComment.getCreatedDate());
         commentRepository.save(comment);
@@ -36,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO findCommentById(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFundException("Comment with given id: " + commentId + " does not exist"));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment with given id: " + commentId + " does not exist"));
         return Mapper.mapToCommentDTO(comment);
     }
 
@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentId) {
         commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResourceNotFundException("Comment with given id: " + commentId + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Comment with given id: " + commentId + " does not exist"));
         commentRepository.deleteById(commentId);
     }
 }

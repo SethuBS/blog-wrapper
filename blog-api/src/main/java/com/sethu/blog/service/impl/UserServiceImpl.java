@@ -4,7 +4,7 @@ import com.sethu.blog.configuration.EmailConfiguration;
 import com.sethu.blog.dto.UserDTO;
 import com.sethu.blog.entity.User;
 import com.sethu.blog.exception.ResourceAlreadyExistsException;
-import com.sethu.blog.exception.ResourceNotFundException;
+import com.sethu.blog.exception.ResourceNotFoundException;
 import com.sethu.blog.mapper.Mapper;
 import com.sethu.blog.repository.UserRepository;
 import com.sethu.blog.service.UserService;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(PasswordGenerator.generateDefaultPassword(12));
         User savedUser = userRepository.save(user);
         // welcoming email.
-        emailService.sendEmail(savedUser.getEmail(),emailConfiguration.getEmailSubject(),savedUser.getUsername(),emailConfiguration.getEmailBody());
+        emailService.sendEmail(savedUser.getEmail(), emailConfiguration.getEmailSubject(), savedUser.getUsername(), emailConfiguration.getEmailBody());
 
         return Mapper.mapToUserDTO(savedUser);
     }
@@ -58,11 +58,19 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findById(userId);
 
         User user = userOptional.orElseThrow(() -> {
-            if(!userOptional.isPresent()) {
-                return new ResourceNotFundException("User with given id: " + userId + " does not exist");
-            }
+            if (userOptional.isPresent())
+                return new ResourceNotFoundException("User with given id: " + userId + " does not exist");
             return null;
         });
+        return Mapper.mapToUserDTO(user);
+    }
+
+    @Override
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new ResourceNotFoundException("User with given : email" + email + " does not exist");
+        }
         return Mapper.mapToUserDTO(user);
     }
 
@@ -76,7 +84,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateUser(Long userId, UserDTO updatedUser) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFundException("User with given id: " + userId + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with given id: " + userId + " does not exist"));
 
         user.setUsername(updatedUser.getUsername());
         user.setPassword(updatedUser.getPassword());
@@ -88,7 +96,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) {
         userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFundException("User with given id: " + userId + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with given id: " + userId + " does not exist"));
         userRepository.deleteById(userId);
+    }
+
+    @Override
+    public void updateUserPassword(Long userId, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found"));
+
+        user.setPassword(newPassword);
+        userRepository.save(user);
     }
 }

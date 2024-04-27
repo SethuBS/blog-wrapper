@@ -2,7 +2,7 @@ package com.sethu.blog.controller;
 
 import com.sethu.blog.dto.UserDTO;
 import com.sethu.blog.exception.ResourceAlreadyExistsException;
-import com.sethu.blog.exception.ResourceNotFundException;
+import com.sethu.blog.exception.ResourceNotFoundException;
 import com.sethu.blog.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -135,10 +135,10 @@ public class UserControllerTest {
         Long userId = 1L;
 
         // Mocking userService.getUserById(userId) to throw a ResourceNotFoundException
-        when(userService.getUserById(userId)).thenThrow(new ResourceNotFundException("User not found"));
+        when(userService.getUserById(userId)).thenThrow(new ResourceNotFoundException("User not found"));
 
         // Call the controller method and assert that ResourceNotFundException is thrown
-        assertThrows(ResourceNotFundException.class, () -> userController.getUserById(userId));
+        assertThrows(ResourceNotFoundException.class, () -> userController.getUserById(userId));
     }
 
     @Test

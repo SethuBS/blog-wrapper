@@ -31,12 +31,12 @@ public class DataLoader implements CommandLineRunner {
     private  EmailConfiguration emailConfig;
     @Override
     public void run(String... args) {
-        //load();
+        load();
     }
 
     private void load(){
         // Create sample user
-        User user1 = new User(null, "Sethu", PasswordGenerator.generateDefaultPassword(12), "sethuserge@gmail.com", new ArrayList<>(), new ArrayList<>(), "ADMIN");
+        User user1 = new User(null, "Sethu", PasswordGenerator.generateDefaultPassword(12), "sethu.serge@gmail.com", new ArrayList<>(), new ArrayList<>(), "ADMIN");
 
         // Save user to the database
         User existingUser1 = userRepository.findUserByEmail(user1.getEmail());

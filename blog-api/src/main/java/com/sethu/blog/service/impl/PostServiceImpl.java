@@ -2,7 +2,7 @@ package com.sethu.blog.service.impl;
 
 import com.sethu.blog.dto.PostDTO;
 import com.sethu.blog.entity.Post;
-import com.sethu.blog.exception.ResourceNotFundException;
+import com.sethu.blog.exception.ResourceNotFoundException;
 import com.sethu.blog.mapper.Mapper;
 import com.sethu.blog.repository.PostRepository;
 import com.sethu.blog.service.PostService;
@@ -26,7 +26,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO getPostById(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFundException("Post with given id: " + postId + " does not exist"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post with given id: " + postId + " does not exist"));
         return Mapper.mapToPostDTO(post);
     }
 
@@ -40,7 +40,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDTO updatePost(Long postId, PostDTO updatedPost) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFundException("Post with given id: " + postId + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Post with given id: " + postId + " does not exist"));
 
         post.setTitle(updatedPost.getTitle());
         post.setContent(updatedPost.getContent());
@@ -52,7 +52,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deletePost(Long postId) {
         postRepository.findById(postId)
-                .orElseThrow(() -> new ResourceNotFundException("Post with given id: " + postId + " does not exist"));
+                .orElseThrow(() -> new ResourceNotFoundException("Post with given id: " + postId + " does not exist"));
         postRepository.deleteById(postId);
     }
 }
