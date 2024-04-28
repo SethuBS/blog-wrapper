@@ -24,7 +24,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         Date expiryDate = calendar.getTime();
 
-        PasswordResetToken resetToken = new PasswordResetToken();
+        var resetToken = new PasswordResetToken();
         resetToken.setResetToken(token);
         resetToken.setTokenExpiry(expiryDate);
         resetToken.setUser(userId);
@@ -39,7 +39,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 
     @Override
     public void deleteResetToken(String token) {
-        PasswordResetToken resetToken = passwordResetTokenRepository.findByResetToken(token);
+        var resetToken = passwordResetTokenRepository.findByResetToken(token);
         if (resetToken != null) {
             passwordResetTokenRepository.delete(resetToken);
         }

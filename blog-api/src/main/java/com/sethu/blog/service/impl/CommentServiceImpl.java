@@ -1,7 +1,6 @@
 package com.sethu.blog.service.impl;
 
 import com.sethu.blog.dto.CommentDTO;
-import com.sethu.blog.entity.Comment;
 import com.sethu.blog.exception.ResourceNotFoundException;
 import com.sethu.blog.mapper.Mapper;
 import com.sethu.blog.repository.CommentRepository;
@@ -19,14 +18,14 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
     @Override
     public CommentDTO createComment(CommentDTO newComment) {
-        Comment commentToSave = Mapper.mapToComment(newComment);
-        Comment savedComment = commentRepository.save(commentToSave);
+        var commentToSave = Mapper.mapToComment(newComment);
+        var savedComment = commentRepository.save(commentToSave);
         return Mapper.mapToCommentDTO(savedComment);
     }
 
     @Override
     public CommentDTO updateComment(Long commentId, CommentDTO updateComment) {
-        Comment comment = commentRepository.findById(commentId)
+        var comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment with " + commentId + " does not exist"));
         comment.setContent(updateComment.getContent());
         comment.setCreatedDate(updateComment.getCreatedDate());
@@ -36,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO findCommentById(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment with given id: " + commentId + " does not exist"));
+        var comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment with given id: " + commentId + " does not exist"));
         return Mapper.mapToCommentDTO(comment);
     }
 

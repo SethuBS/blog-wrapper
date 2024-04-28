@@ -29,24 +29,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
-        String email = userDTO.getEmail();
-        String username = userDTO.getUsername();
+        var email = userDTO.getEmail();
+        var username = userDTO.getUsername();
 
-        User existingUserEmailAddress = userRepository.findUserByEmail(email);
+        var existingUserEmailAddress = userRepository.findUserByEmail(email);
+        var existingUserName = userRepository.findByUsername(username);
 
-        if (existingUserEmailAddress != null) {
-            throw new ResourceAlreadyExistsException("User with email: " + email + " already exists");
-        }
+        Optional.ofNullable(existingUserEmailAddress)
+                .ifPresent(e -> { throw new ResourceAlreadyExistsException("User with email: " + email + " already exists"); });
 
-        User existingUserName = userRepository.findByUsername(username);
+        Optional.ofNullable(existingUserName)
+                .ifPresent(u -> { throw new ResourceAlreadyExistsException("User with email: " + username + " already exists"); });
 
-        if (existingUserName != null) {
-            throw new ResourceAlreadyExistsException("User with email: " + username + " already exists");
-        }
 
-        User user = Mapper.mapToUser(userDTO);
+        var user = Mapper.mapToUser(userDTO);
         user.setPassword(PasswordGenerator.generateDefaultPassword(12));
-        User savedUser = userRepository.save(user);
+        var savedUser = userRepository.save(user);
         // welcoming email.
         emailService.sendEmail(savedUser.getEmail(), emailConfiguration.getEmailSubject(), savedUser.getUsername(), emailConfiguration.getEmailBody());
 
@@ -57,7 +55,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserById(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
 
-        User user = userOptional.orElseThrow(() -> {
+        var user = userOptional.orElseThrow(() -> {
             if (userOptional.isPresent())
                 return new ResourceNotFoundException("User with given id: " + userId + " does not exist");
             return null;
@@ -67,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserByEmail(String email) {
-        User user = userRepository.findUserByEmail(email);
+        var user = userRepository.findUserByEmail(email);
         if (user == null) {
             throw new ResourceNotFoundException("User with given : email" + email + " does not exist");
         }
@@ -83,7 +81,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(Long userId, UserDTO updatedUser) {
-        User user = userRepository.findById(userId)
+        var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with given id: " + userId + " does not exist"));
 
         user.setUsername(updatedUser.getUsername());
@@ -102,7 +100,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserPassword(Long userId, String newPassword) {
-        User user = userRepository.findById(userId)
+        var user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + userId + " not found"));
 
         user.setPassword(newPassword);
