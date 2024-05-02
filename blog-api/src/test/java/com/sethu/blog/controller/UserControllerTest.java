@@ -1,34 +1,25 @@
 package com.sethu.blog.controller;
 
-import com.sethu.blog.configuration.JwtProvider;
 import com.sethu.blog.dto.UserDTO;
 import com.sethu.blog.exception.ResourceAlreadyExistsException;
 import com.sethu.blog.exception.ResourceNotFoundException;
 import com.sethu.blog.response.AuthResponse;
 import com.sethu.blog.service.UserService;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
@@ -72,43 +63,9 @@ public class UserControllerTest {
         // Assert
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals("Register Success", Objects.requireNonNull(responseEntity.getBody()).getMessage());
-        assertTrue(responseEntity.getBody().getStatus());
+        Assertions.assertTrue(responseEntity.getBody().getStatus());
         verify(passwordEncoder).encode("password");
         verify(userService).createUser(userDTO);
-    }
-
-    //@Test TODO: fix this unit test
-    void signin_shouldReturnAuthResponseWithToken_whenUserSignedInSuccessfully() {
-        // Mock data
-        UserDTO loginRequest = new UserDTO();
-        loginRequest.setEmail("test@example.com");
-        loginRequest.setPassword("password");
-
-        UserDetails userDetails = new User("test@example.com", "password", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-        String token = "token";
-        AuthResponse expectedResponse = new AuthResponse();
-        expectedResponse.setMessage("Login success");
-        expectedResponse.setJwt(token);
-        expectedResponse.setStatus(true);
-
-        // Mocking behavior of userService
-        Mockito.when(userService.loadUserByEmail(Mockito.anyString())).thenReturn(userDetails);
-
-        // Mocking behavior of passwordEncoder
-        Mockito.when(passwordEncoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
-
-        // Mocking behavior of jwtProvider
-        Mockito.when(JwtProvider.generateToken(Mockito.eq(authentication))).thenReturn(token);
-
-        // Call the method
-        ResponseEntity<AuthResponse> response = userController.signin(loginRequest);
-
-        // Assert
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Assert.assertEquals(expectedResponse, response.getBody());
     }
 
     @Test

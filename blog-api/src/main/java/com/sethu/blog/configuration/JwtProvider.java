@@ -1,6 +1,5 @@
 package com.sethu.blog.configuration;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +21,6 @@ public class JwtProvider {
     public static String generateToken(Authentication auth) {
         Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
         String roles = populateAuthorities(authorities);
-        @SuppressWarnings("deprecation")
         String jwt = Jwts.builder()
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + 86400000))
@@ -44,19 +42,4 @@ public class JwtProvider {
     }
 
 
-    @SuppressWarnings("deprecation")
-    public static String getEmailFromJwtToken(String jwt) {
-        jwt = jwt.substring(7); // Assuming "Bearer " is removed from the token
-        try {
-            //Claims claims=Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
-            Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(jwt).getBody();
-            String email = String.valueOf(claims.get("email"));
-            logger.info("Email extracted from JWT: " + claims);
-            return email;
-        } catch (Exception e) {
-            System.err.println("Error extracting email from JWT: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }
 }
