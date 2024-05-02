@@ -9,23 +9,37 @@ import com.sethu.blog.mapper.Mapper;
 import com.sethu.blog.repository.UserRepository;
 import com.sethu.blog.service.UserService;
 import com.sethu.blog.service.email.EmailService;
-import com.sethu.blog.service.generator.PasswordGenerator;
-import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
-    private EmailService emailService;
+    private final UserRepository userRepository;
+    private final EmailService emailService;
+    private final EmailConfiguration emailConfiguration;
 
-    private EmailConfiguration emailConfiguration;
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository,
+                           EmailService emailService,
+                           EmailConfiguration emailConfiguration) {
+        this.userRepository = userRepository;
+        this.emailService = emailService;
+        this.emailConfiguration = emailConfiguration;
+    }
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
@@ -43,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
 
         var user = Mapper.mapToUser(userDTO);
-        user.setPassword(PasswordGenerator.generateDefaultPassword(12));
+
         var savedUser = userRepository.save(user);
         // welcoming email.
         emailService.sendEmail(savedUser.getEmail(), emailConfiguration.getEmailSubject(), savedUser.getUsername(), emailConfiguration.getEmailBody());
@@ -107,5 +121,26 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(newPassword);
         userRepository.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByEmail(String email) {
+        var user = userRepository.findUserByEmail(email);
+        logger.info(user);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with this email" + email);
+        }
+
+        logger.info("Loaded user: " + user.getEmail() + ", User Password: " + user.getPassword() + ", Role: " + user.getRole());
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        // Add user roles as authorities if needed
+        authorities.add(new SimpleGrantedAuthority(user.getRole()));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                authorities);
+
     }
 }

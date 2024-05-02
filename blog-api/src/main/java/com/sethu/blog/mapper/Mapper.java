@@ -18,6 +18,7 @@ public class Mapper {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
+        userDTO.setPassword(user.getPassword());
         userDTO.setEmail(user.getEmail());
         userDTO.setPosts(mapToPostDTOList(user.getPosts()));
         userDTO.setComments(mapToCommentDTOList(user.getComments()));
@@ -62,6 +63,7 @@ public class Mapper {
         User user = new User();
         user.setId(userDTO.getId());
         user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword());
         user.setEmail(userDTO.getEmail());
         user.setMobileNumber(userDTO.getMobileNumber());
         user.setRole(userDTO.getRole());

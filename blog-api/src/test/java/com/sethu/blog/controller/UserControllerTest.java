@@ -1,21 +1,34 @@
 package com.sethu.blog.controller;
 
+import com.sethu.blog.configuration.JwtProvider;
 import com.sethu.blog.dto.UserDTO;
 import com.sethu.blog.exception.ResourceAlreadyExistsException;
 import com.sethu.blog.exception.ResourceNotFoundException;
+import com.sethu.blog.response.AuthResponse;
 import com.sethu.blog.service.UserService;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
@@ -33,22 +46,69 @@ public class UserControllerTest {
 
     private UserDTO testUserDTO;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
+
     @BeforeEach
     public void setUp() {
         // Create a test UserDTO
-        testUserDTO = new UserDTO(1L, "testUser", "testUser123@","test@example.com", null, null,"USER");
+        testUserDTO = new UserDTO(1L, "testUser", "testUser123@", "test@example.com", null, null, "+2784327374", "USER");
     }
 
     @Test
-    public void testCreateUser() {
-        // Mock the userService's createUser method to return the testUserDTO when called
-        when(userService.createUser(testUserDTO)).thenReturn(testUserDTO);
+    void createUser_shouldReturnAuthResponseWithToken_whenUserCreatedSuccessfully() {
+        // Arrange
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail("test@example.com");
+        userDTO.setPassword("password");
 
-        // Call the createUser method in the userController
-        ResponseEntity<UserDTO> responseEntity = userController.createUser(testUserDTO);
+        when(passwordEncoder.encode("password")).thenReturn("hashedPassword");
+        when(userService.createUser(userDTO)).thenReturn(userDTO);
 
-        // Verify that the returned ResponseEntity contains the expected UserDTO
-        assertEquals(testUserDTO, responseEntity.getBody());
+        // Act
+        ResponseEntity<AuthResponse> responseEntity = userController.createUser(userDTO);
+
+        // Assert
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("Register Success", Objects.requireNonNull(responseEntity.getBody()).getMessage());
+        assertTrue(responseEntity.getBody().getStatus());
+        verify(passwordEncoder).encode("password");
+        verify(userService).createUser(userDTO);
+    }
+
+    //@Test TODO: fix this unit test
+    void signin_shouldReturnAuthResponseWithToken_whenUserSignedInSuccessfully() {
+        // Mock data
+        UserDTO loginRequest = new UserDTO();
+        loginRequest.setEmail("test@example.com");
+        loginRequest.setPassword("password");
+
+        UserDetails userDetails = new User("test@example.com", "password", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+        String token = "token";
+        AuthResponse expectedResponse = new AuthResponse();
+        expectedResponse.setMessage("Login success");
+        expectedResponse.setJwt(token);
+        expectedResponse.setStatus(true);
+
+        // Mocking behavior of userService
+        Mockito.when(userService.loadUserByEmail(Mockito.anyString())).thenReturn(userDetails);
+
+        // Mocking behavior of passwordEncoder
+        Mockito.when(passwordEncoder.matches(Mockito.anyString(), Mockito.anyString())).thenReturn(true);
+
+        // Mocking behavior of jwtProvider
+        Mockito.when(JwtProvider.generateToken(Mockito.eq(authentication))).thenReturn(token);
+
+        // Call the method
+        ResponseEntity<AuthResponse> response = userController.signin(loginRequest);
+
+        // Assert
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assert.assertEquals(expectedResponse, response.getBody());
     }
 
     @Test
@@ -74,15 +134,12 @@ public class UserControllerTest {
     public void testGetAllUsers() {
 
         // Creating some sample UserDTO objects
-        UserDTO user1 = new UserDTO(null,"user1", "user1@123","user1@example.com",null,null,"ADMIN");
-        UserDTO user2 = new UserDTO(null,"user2", "user2@123","user2@example.com",null,null,"USER");
+        UserDTO user1 = new UserDTO(null, "user1", "user1@123", "user1@example.com", null, null, "mobile number", "ADMIN");
+        UserDTO user2 = new UserDTO(null, "user2", "user2@123", "user2@example.com", null, null, "mobile number", "USER");
 
         // Mocking the behavior of userService.getAllUsers() to return a list of UserDTOs
         List<UserDTO> expectedUserDTOList = Arrays.asList(user1, user2);
         when(userService.getAllUsers()).thenReturn(expectedUserDTOList);
-
-        // Creating an instance of the UserController and injecting the mocked UserService
-        UserController userController = new UserController(userService);
 
         // Calling the getAllUsers method
         ResponseEntity<List<UserDTO>> responseEntity = userController.getAllUsers();

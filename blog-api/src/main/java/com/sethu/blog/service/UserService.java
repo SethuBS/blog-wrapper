@@ -1,6 +1,7 @@
 package com.sethu.blog.service;
 
 import com.sethu.blog.dto.UserDTO;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface UserService {
 
     void deleteUser(Long userId);
     void updateUserPassword(Long userId, String newPassword);
+
+    UserDetails loadUserByEmail(String email);
 }
