@@ -39,9 +39,10 @@ public class DataLoader implements CommandLineRunner {
         User user1 = new User(null, "Sethu", PasswordGenerator.generateDefaultPassword(12), "sethu.serge@gmail.com", new ArrayList<>(), new ArrayList<>(), "+2784327374", "ADMIN");
 
         // Save user to the database
-        User existingUser1 = userRepository.findUserByEmail(user1.getEmail());
+        User existingUserByEmail = userRepository.findUserByEmail(user1.getEmail());
+        User existingUserByUserName = userRepository.findByUsername(user1.getUsername());
 
-        if(existingUser1 == null){
+        if(existingUserByEmail == null || existingUserByUserName == null){
             userRepository.save(user1);
             logger.info("New users saved to the database");
             emailService.sendEmail(user1.getEmail(),emailConfig.getEmailSubject(),user1.getUsername(),emailConfig.getEmailBody());
