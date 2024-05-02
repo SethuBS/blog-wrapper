@@ -33,6 +33,9 @@ public class User {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
+    @Column(name = "mobile_number", nullable = false)
+    private String mobileNumber;
+
     @Column(nullable = false)
     private String role;
 

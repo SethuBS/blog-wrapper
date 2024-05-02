@@ -5,6 +5,7 @@ import com.sethu.blog.service.UserService;
 import com.sethu.blog.service.email.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ public class PasswordResetController {
 
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> email) {
+    public ResponseEntity<?> forgotPassword(@Validated  @RequestBody Map<String, String> email) {
         var userEmail = email.get("email");
         var userDTO = userService.getUserByEmail(userEmail);
 
@@ -36,7 +37,7 @@ public class PasswordResetController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam String token, @RequestBody Map<String, String> password) {
+    public ResponseEntity<?> resetPassword(@Validated @RequestParam String token, @RequestBody Map<String, String> password) {
         var newPassword = password.get("password");
         var passwordResetToken = passwordResetTokenService.getResetToken(token);
 

@@ -21,6 +21,7 @@ public class Mapper {
         userDTO.setEmail(user.getEmail());
         userDTO.setPosts(mapToPostDTOList(user.getPosts()));
         userDTO.setComments(mapToCommentDTOList(user.getComments()));
+        userDTO.setMobileNumber(user.getMobileNumber());
         userDTO.setRole(user.getRole());
         return userDTO;
     }
@@ -62,6 +63,7 @@ public class Mapper {
         user.setId(userDTO.getId());
         user.setUsername(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
+        user.setMobileNumber(userDTO.getMobileNumber());
         user.setRole(userDTO.getRole());
         return user;
     }

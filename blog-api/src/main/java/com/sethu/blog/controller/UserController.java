@@ -4,6 +4,7 @@ import com.sethu.blog.dto.UserDTO;
 import com.sethu.blog.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +18,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<UserDTO> createUser(@Validated @RequestBody UserDTO userDTO){
         return ResponseEntity.ok(userService.createUser(userDTO));
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable("id") Long userId){
+    public ResponseEntity<UserDTO> getUserById(@Validated @PathVariable("id") Long userId){
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
@@ -32,13 +33,13 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable("id") Long userId,
+    public ResponseEntity<UserDTO> updateUser(@Validated @PathVariable("id") Long userId,
                                               @RequestBody UserDTO userDTO){
         return ResponseEntity.ok(userService.updateUser(userId, userDTO));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long userId){
+    public ResponseEntity<String> deleteUser(@Validated @PathVariable("id") Long userId){
         userService.deleteUser(userId);
         return ResponseEntity.ok("User deleted successful");
     }

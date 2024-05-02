@@ -1,5 +1,6 @@
 package com.sethu.blog.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class CommentDTO {
     private Long id;
+    @NotBlank
     private String content;
+    @NotBlank
     private PostDTO post;
+    @NotBlank
     private Date createdDate;
 }

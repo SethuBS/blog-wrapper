@@ -1,5 +1,6 @@
 package com.sethu.blog.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,12 @@ import java.util.Date;
 @NoArgsConstructor
 public class PostDTO {
     private Long id;
+    @NotBlank
     private String title;
+    @NotBlank
     private String content;
+    @NotBlank
     private Date createDate;
+    @NotBlank
     private UserDTO author;
 }
